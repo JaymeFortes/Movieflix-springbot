@@ -1,10 +1,10 @@
 package com.devsuperior.movieflix.services;
 
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.devsuperior.movieflix.dto.GenreDTO;
 import com.devsuperior.movieflix.entities.Genre;
@@ -16,9 +16,9 @@ public class GenreService {
     @Autowired
     private GenreRepository repository;
 
-     public Page<GenreDTO> findAllPaged(Pageable pageable) {
-        Page<Genre> categories = repository.findAll(pageable);
-        return categories.map(x -> new GenreDTO(x));
-     }
-    
+    @Transactional(readOnly = true)
+    public List<GenreDTO> findAllPaged() {
+        List<Genre> categories = repository.findAll();
+        return categories.stream().map(GenreDTO::new).collect(java.util.stream.Collectors.toList());
+    }
 }
